@@ -1,0 +1,42 @@
+/*
+ Theme Name:     Nimble-flexrent
+ Theme URI:      http://www.bsoft.ch
+ Description:    Nimble Child Theme for flexrent
+ Author:         Chris Banford
+ Author URI:     http://www.bsoft.ch
+ Template:       Nimble
+ Version:        1.0.0
+*/
+
+@import url("../Nimble/style.css");
+
+/* Header */
+.et_color_scheme_gray #background-wrapper {
+    background: url(images/header-circle-background-big-80.png) no-repeat center top;
+}
+    .et_color_scheme_gray #background-wrapper #dots-wrapper {
+        background: url(images/bg_pattern_1.png) repeat top left;
+    }
+        .et_color_scheme_gray #main-header {
+            background: linear-gradient(to bottom, #630000 0%, #BA0000 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+        }
+            #main-header #logo {
+                 padding-left: 0px;
+             }
+            #top-area {
+                padding-top: 25px;
+                padding-bottom: 50px;
+            }
+
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    /* Header */
+    .et_color_scheme_gray #background-wrapper {
+        background: url(images/header-circle-background-medium-80.png) no-repeat center top;
+    }
+}
+@media only screen and (max-width: 767px) {
+    /* Header */
+    .et_color_scheme_gray #background-wrapper {
+        background: url(images/header-circle-background-small-80.png) no-repeat center top;
+    }
+}
