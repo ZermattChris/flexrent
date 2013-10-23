@@ -10,7 +10,7 @@
 
 @import url("../Nimble/style.css");
 
-/* Header */
+/* Large Header */
 .et_color_scheme_gray #background-wrapper {
     background: url(images/header-circle-background-big-80.png) no-repeat center top;
 }
@@ -20,23 +20,55 @@
         .et_color_scheme_gray #main-header {
             background: linear-gradient(to bottom, #630000 0%, #BA0000 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
         }
-            #main-header #logo {
-                 padding-left: 0px;
-             }
-            #top-area {
-                padding-top: 25px;
-                padding-bottom: 50px;
+            #main-header div.container {
+                height: 170px;
             }
+                #main-header #logo {
+                    padding-left: 0px;
+                    position: absolute; /* shrink the container box for logo to allow slide show to move upwards */
+                }
+                #top-area {
+                    padding-top: 25px;
+                    padding-bottom: 50px;
+                }
+                #featured h2, #featured p {
+                    text-shadow: 1px 1px 3px rgba(0, 0, 0,1);       /* A Darker text shadow */
+                    text-align: right;
+                }
+                    #featured div.description {
+                        text-shadow: 1px 1px 3px rgba(0, 0, 0,1);       /* A Darker text shadow */
+                        text-align: right;
+                    }
 
+/* Medium Header */
 @media only screen and (min-width: 768px) and (max-width: 959px) {
-    /* Header */
     .et_color_scheme_gray #background-wrapper {
         background: url(images/header-circle-background-medium-80.png) no-repeat center top;
     }
 }
+
+/* Small Header */
 @media only screen and (max-width: 767px) {
-    /* Header */
     .et_color_scheme_gray #background-wrapper {
         background: url(images/header-circle-background-small-80.png) no-repeat center top;
     }
+        #main-header div.container {
+            height: 240px;
+        }
+            #main-header #logo {
+                width: 140px;
+                position: relative; /* Remove the shrink (the container box for logo to allow slide show to move upwards) */
+            }
+                #featured h2 {
+                    margin-bottom: 7px;
+                }
+                #featured h2, #featured p {
+                    text-align: center;
+                }
+                #featured div.description {
+                    text-align: center;
+                }
+            #mobile_links {
+                padding-top: 20px;
+            }
 }
