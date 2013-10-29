@@ -10,7 +10,7 @@
 
 @import url("../Nimble/style.css");
 
-/* Large Header */
+/* ============== Large Header ================ */
 .et_color_scheme_gray #background-wrapper {
     background: url(images/header-circle-background-big-80.png) no-repeat center top;
 }
@@ -21,7 +21,7 @@
             background: linear-gradient(to bottom, #630000 0%, #BA0000 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
         }
             #main-header div.container {
-                height: 170px;
+                height: 120px;
             }
                 #main-header #logo {
                     padding-left: 0px;
@@ -38,12 +38,39 @@
                     #featured div.description {
                         text-shadow: 1px 1px 3px rgba(0, 0, 0,1);       /* A Darker text shadow */
                         text-align: right;
+                        padding-bottom: 20px;
                     }
+                    /* Top slider prev and next nav buttons */
+                    .et_color_scheme_gray #featured .flex-direction-nav a.flex-prev {
+                        background: url("../Nimble/images/red/slider_left_arrow.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                    }
+                    .et_color_scheme_gray #featured .flex-direction-nav a.flex-next {
+                        background: url("../Nimble/images/red/slider_right_arrow.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                    }
+                    #featured .flex-direction-nav a {
+                        top: 80%;
+                    }
+
+ul.nav > li.current_page_item > a, a.mobile_nav {
+    background: none repeat scroll 0 0 #BA0000;
+    border: 1px solid 630000;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) inset;
+    font-weight: 800;
+}
+
 
 /* Medium Header */
 @media only screen and (min-width: 768px) and (max-width: 959px) {
     .et_color_scheme_gray #background-wrapper {
         background: url(images/header-circle-background-medium-80.png) no-repeat center top;
+    }
+    /* Top slider prev and next nav buttons */
+    .et_color_scheme_gray #featured .flex-direction-nav a.flex-prev {
+        margin-left: -50px;
+    }
+    .et_color_scheme_gray #featured .flex-direction-nav a.flex-next {
+        margin-right: -50px;
     }
 }
 
@@ -68,7 +95,31 @@
                 #featured div.description {
                     text-align: center;
                 }
+                /* Centers the slide image for Tablet and Phone size screens */
+                /*#featured .slide.flex-active-slide img {*/
+                    /*position: relative;*/
+                    /*left: -15%;*/
+                /*}*/
+    #featured.flexslider .slides > li.slide img {
+        position: relative;
+        left: -15%;
+    }
             #mobile_links {
                 padding-top: 20px;
             }
+            /* Top slider prev and next nav buttons */
+            .et_color_scheme_gray #featured .flex-direction-nav a.flex-prev {
+                background: url("../Nimble/images/red/small_slider_left_arrow.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+            }
+            .et_color_scheme_gray #featured .flex-direction-nav a.flex-next {
+                background: url("../Nimble/images/red/small_slider_right_arrow.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+            }
+
+    /* Top slider prev and next nav buttons */
+    .et_color_scheme_gray #featured .flex-direction-nav a.flex-prev {
+        margin-left: -50px;
+    }
+    .et_color_scheme_gray #featured .flex-direction-nav a.flex-next {
+        margin-right: -50px;
+    }
 }
