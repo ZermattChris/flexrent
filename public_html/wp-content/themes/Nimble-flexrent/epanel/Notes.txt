@@ -1,0 +1,6 @@
+The files in the child theme's /epanel dir are not being used to override
+the originals from the parent theme. They've just been copied here for
+reference and to make sure they aren't overwritten if a partent theme
+update is undertaken...
+
+~Chris

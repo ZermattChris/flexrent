@@ -1190,8 +1190,14 @@ class ICL_Pro_Translation{
             $_wp_page_template = get_post_meta($translation['original_id'], '_wp_page_template', true);
             update_post_meta($new_post_id, '_wp_page_template', $_wp_page_template);
         }
-        
-        if(!$new_post_id){
+
+		// sync post format
+		if ( $sitepress_settings[ 'sync_post_format' ] ) {
+			$_wp_post_format = get_post_format( $translation[ 'original_id' ] );
+			set_post_format( $new_post_id, $_wp_post_format );
+		}
+
+		if(!$new_post_id){
             return false;
         }
         
@@ -2145,5 +2151,4 @@ class ICL_Pro_Translation{
         }
     }
         
-}  
-?>
+}

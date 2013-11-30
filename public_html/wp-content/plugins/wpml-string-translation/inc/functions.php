@@ -1196,7 +1196,9 @@ function icl_st_author_description_filter($value, $user_id){
     }
     
     $user = new WP_User($user_id);        
-    
+
+	if(!isset($sitepress_settings['st']['translated-users'])) $sitepress_settings['st']['translated-users'] = array();
+
     if ( is_array( $user->roles ) && is_array($sitepress_settings['st']['translated-users']) && array_intersect($user->roles, $sitepress_settings['st']['translated-users'])){
         $value = icl_st_translate_author_fields('description', $value, $user_id);
     }
@@ -1363,13 +1365,13 @@ function icl_t_cache_lookup($context, $name){
         
         $icl_st_cache[$current_language][$context] = array();
         // workaround for multi-site setups - part i
-        global $switched, $switched_stack;        
-        if(isset($switched) && $switched){
+        global $switched, $_wp_switched_stack;
+        if(isset($switched) && $switched && $_wp_switched_stack){
             $prev_blog_id = $wpdb->blogid;
-            $wpdb->set_blog_id($switched_stack[0]);
+            $wpdb->set_blog_id($_wp_switched_stack[0]);
         }
         
-        // THE QUERY        
+        // THE QUERY
         $res = $wpdb->get_results($wpdb->prepare("
             SELECT s.name, s.value, t.value AS translation_value, t.status
             FROM  {$wpdb->prefix}icl_strings s
@@ -1378,10 +1380,10 @@ function icl_t_cache_lookup($context, $name){
                 AND (t.language = %s OR t.language IS NULL)
             ", $context, $current_language), ARRAY_A);        
         // workaround for multi-site setups - part ii
-        if(isset($switched) && $switched){
+        if(isset($switched) && $switched && $_wp_switched_stack){
             $wpdb->set_blog_id($prev_blog_id);
         }   
-        
+
         // SAVE QUERY RESULTS
         if($res){
             foreach($res as $row){                

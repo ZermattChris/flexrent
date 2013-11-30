@@ -66,22 +66,59 @@ class WPML_Slug_Translation{
                                 JOIN {$wpdb->prefix}icl_strings s ON t.string_id = s.id
                             WHERE t.language = %s AND s.name = %s AND s.value = %s
                         ", $sitepress->get_current_language(), 'URL slug: ' . $slug, $slug));
-   
+                
+                $using_tags = false;
+                
+                /* case of slug using %tags% - PART 1 of 2 - START */       
+                if(preg_match('#%([^/]+)%#', $slug)){
+                    $slug = preg_replace('#%[^/]+%#', '.+?', $slug);
+                    $using_tags = true;
+                }
+                if(preg_match('#%([^/]+)%#', $slug_translation)){
+                    $slug_translation = preg_replace('#%[^/]+%#', '.+?', $slug_translation);
+                    $using_tags = true;
+                }
+                /* case of slug using %tags% - PART 1 of 2 - END */
+                
                 $buff_value = array();                     
                 foreach((array)$value as $k=>$v){            
                     
                     if($slug && $slug != $slug_translation){                        
-                        if(preg_match('#^[^/]*/?' . $slug . '/#', $k) && $slug != $slug_translation){
-                            $k = preg_replace('#^([^/]*)(/?)' . $slug . '/#',  '$1$2' . $slug_translation . '/' , $k);    
+                        if(preg_match('#^[^/]*/?' . preg_quote($slug) . '/#', $k) && $slug != $slug_translation){
+                            $k = preg_replace('#^([^/]*)(/?)' . preg_quote($slug) . '/#',  '$1$2' . $slug_translation . '/' , $k);    
                         }
+                        
                     }
-                    
                     $buff_value[$k] = $v;
-                    
                 }
                 
                 $value = $buff_value;
                 unset($buff_value);                
+                
+                /* case of slug using %tags% - PART 2 of 2 - START */       
+                if($using_tags){
+                    if(preg_match('#\.\+\?#', $slug)){
+                        $slug = preg_replace('#\.\+\?#', '(.+?)', $slug);
+                    }
+                    if(preg_match('#\.\+\?#', $slug_translation)){
+                        $slug_translation = preg_replace('#\.\+\?#', '(.+?)', $slug_translation);
+                    }
+                    $buff_value = array();                     
+                    foreach($value as $k=>$v){            
+                        
+                        if($slug && $slug != $slug_translation){                        
+                            if(preg_match('#^[^/]*/?' . preg_quote($slug) . '/#', $k) && $slug != $slug_translation){
+                                $k = preg_replace('#^([^/]*)(/?)' . preg_quote($slug) . '/#',  '$1$2' . $slug_translation . '/' , $k);    
+                            }
+                            
+                        }
+                        $buff_value[$k] = $v;
+                    }
+                    
+                    $value = $buff_value;
+                    unset($buff_value);  
+                }              
+                /* case of slug using %tags% - PART 2 of 2 - END */       
                 
             }
         }            
@@ -171,7 +208,7 @@ class WPML_Slug_Translation{
 
         static $cache;        
         
-        if(!isset($cache[$post->ID])){
+        if(!isset($cache[$post->ID][$leavename . '#' . $sample])){
             
             $strings_language = $sitepress_settings['st']['strings_language'];
             
@@ -204,7 +241,7 @@ class WPML_Slug_Translation{
                     //$wp_rewrite->extra_permastructs[$post->post_type]['struct'] = str_replace('/' . $slug_this, '/' . $slug_real, $struct_original);
                     $wp_rewrite->extra_permastructs[$post->post_type]['struct'] = preg_replace('@'. $lslash . $slug_this . '/@', $lslash.$slug_real.'/' , $struct_original);
                     $no_recursion_flag = true;
-                    $post_link = get_post_permalink($post->ID);
+                    $post_link = get_post_permalink($post->ID, $leavename, $sample);
                     $no_recursion_flag = false;
                     $wp_rewrite->extra_permastructs[$post->post_type]['struct'] = $struct_original;
                     
@@ -215,14 +252,14 @@ class WPML_Slug_Translation{
                     
                 }
                 
-                $cache[$post->ID] = $post_link;
+                $cache[$post->ID][$leavename . '#' . $sample] = $post_link;
                     
                     
             }
             
         }else{
             
-            $post_link = $cache[$post->ID];
+            $post_link = $cache[$post->ID][$leavename . '#' . $sample];
             
         }
                 
@@ -243,8 +280,3 @@ class WPML_Slug_Translation{
     }
     
 }
-
-  
-  
-  
-?>

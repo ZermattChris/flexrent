@@ -11,7 +11,7 @@ class WPML_Taxonomy_Translation{
     
     function __construct($taxonomy = '', $args = array()){
         global $wpdb, $sitepress, $sitepress_settings;
-        
+
         if(empty($taxonomy)){
             
             global $wp_taxonomies;
@@ -234,10 +234,9 @@ class WPML_Taxonomy_Translation{
             }
             
         }        
-        
-        
+
     }
-    
+
     function order_terms_by_hierarchy($terms){
         
         $ordered_list = array();
@@ -514,7 +513,6 @@ class WPML_Taxonomy_Translation{
                 $term_ids[] = $term->term_id;
             }
             
-            
             $trid = $sitepress->get_element_trid($post->ID, 'post_' . $post->post_type);
             $translations = $sitepress->get_element_translations($trid, 'post_' . $post->post_type, true, true);
             
@@ -559,16 +557,17 @@ class WPML_Taxonomy_Translation{
                         
                         if(!in_array($term_id, $translation_term_ids)){
                             // add term
-                            
+
                             if($preview){
                                 $needs_sync = true;    
                                 break(3);  
                             }
                             
                             $term_id_translated = icl_object_id($term_id, $taxonomy, false, $language);
+                            
                             if(!is_taxonomy_hierarchical($taxonomy)){
                                 $term_details = get_term($term_id_translated, $taxonomy);
-                                $term_id_translated = $term->name;
+                                $term_id_translated = $term_details->name;
                             }
                             if(!$preview){
                                 wp_set_post_terms($translation->element_id, $term_id_translated, $taxonomy, true);
@@ -671,4 +670,3 @@ add_action('wp_ajax_wpml_tt_save_labels_translation', array('WPML_Taxonomy_Trans
 
 add_action('wp_ajax_wpml_tt_sync_taxonomies_in_content_preview', array('WPML_Taxonomy_Translation', 'sync_taxonomies_in_content_preview'));
 add_action('wp_ajax_wpml_tt_sync_taxonomies_in_content', array('WPML_Taxonomy_Translation', 'sync_taxonomies_in_content'));
-

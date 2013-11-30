@@ -17,7 +17,8 @@ class TM_Notification{
         global $iclTranslationManagement, $sitepress, $wpdb;
         $job = $iclTranslationManagement->get_translation_job($job_id);
         $translators = TranslationManagement::get_blog_translators(array('to'=>$job->language_code));
-        $edit_url = admin_url('admin.php?page=' . WPML_TM_FOLDER . '/menu/translations-queue.php&job_id=' . $job_id);
+        $edit_url = apply_filters('icl_job_edit_url',admin_url('admin.php?page=' . WPML_TM_FOLDER . '/menu/translations-queue.php&job_id=' . $job_id),$job_id);
+
         foreach($translators as $t){
             
             if($job->manager_id == $t->ID) continue;
@@ -57,8 +58,8 @@ class TM_Notification{
         
         if($job->manager_id == $job->translator_id) return;
         
-        $edit_url = admin_url('admin.php?page=' . WPML_TM_FOLDER . '/menu/translations-queue.php&job_id=' . $job_id);
-        
+        $edit_url = apply_filters('icl_job_edit_url',admin_url('admin.php?page=' . WPML_TM_FOLDER . '/menu/translations-queue.php&job_id=' . $job_id),$job_id);
+
         $user = new WP_User($translator_id);
         
         // get current user admin language

@@ -74,12 +74,12 @@
                     </nav>
                 </div> <!-- end #top-area -->
 
-                <?php if ( ! is_home() ) get_template_part( 'includes/top_info' ); ?>
             </div> <!-- end .container -->
+            <?php if ( ! is_home() ) get_template_part( 'includes/top_info' ); ?>
 
             <?php if ( 'on' == et_get_option( 'nimble_featured', 'on' ) && is_home() ) get_template_part( 'includes/featured', 'home' ); ?>
 
-            <?php if ( ! is_home() ) get_template_part( 'includes/breadcrumbs' ); ?>
+            <?php // if ( ! is_home() ) get_template_part( 'includes/breadcrumbs' ); ?>
 
             </div> <!-- end #dots-wrapper -->
         </div> <!-- end #background-wrapper -->

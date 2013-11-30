@@ -3,6 +3,14 @@
 include_once ICL_PLUGIN_PATH . '/inc/functions-troubleshooting.php';
 
 /* DEBUG ACTION */
+/**
+ * @return callable
+ */
+function get_term_taxonomy_id_from_term_object($term_object)
+{
+	return $term_object->term_taxonomy_id;
+}
+
 if ( isset( $_GET[ 'debug_action' ] ) && $_GET[ 'nonce' ] == wp_create_nonce( $_GET[ 'debug_action' ] ) ) {
 	ob_end_clean();
 	switch ( $_GET[ 'debug_action' ] ) {
@@ -187,7 +195,6 @@ if ( isset( $_GET[ 'debug_action' ] ) && $_GET[ 'nonce' ] == wp_create_nonce( $_
 
 			exit;
 		//break;
-
 		case 'icl_cms_id_fix':
 			$iclq = new ICanLocalizeQuery( $sitepress_settings[ 'site_id' ], $sitepress_settings[ 'access_key' ] );
 
@@ -221,7 +228,6 @@ if ( isset( $_GET[ 'debug_action' ] ) && $_GET[ 'nonce' ] == wp_create_nonce( $_
 
 			exit;
 		//break;
-
 		case 'icl_cleanup':
 			global $sitepress, $wpdb, $wp_post_types;
 			$post_types = array_keys( $wp_post_types );
@@ -248,7 +254,60 @@ if ( isset( $_GET[ 'debug_action' ] ) && $_GET[ 'nonce' ] == wp_create_nonce( $_
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}icl_translations SET source_language_code = '%s' WHERE translation_id=%d", $sitepress->get_default_language(), $row->translation_id ) );
 			}
 			break;
+		case 'assign_translation_status_to_duplicates':
+			//ICL_TM_DUPLICATE
+			if(!class_exists('TranslationManagement')) break;
 
+			global $sitepress, $iclTranslationManagement;
+
+			$active_languages = $sitepress->get_active_languages();
+
+			$duplicated_posts_sql = "select meta_value from {$wpdb->postmeta} where meta_key='_icl_lang_duplicate_of' AND meta_value<>'' group by meta_value;";
+			$duplicated_posts = $wpdb->get_results($duplicated_posts_sql);
+
+			$updated_items = 0;
+			foreach ( $duplicated_posts as $duplicated_posts_row ) {
+
+				//$duplicated_post_id = $duplicated_posts_row->post_id;
+				$original_post_id   = $duplicated_posts_row->meta_value;
+				$element_type    = 'post_' . get_post_type( $original_post_id );
+				$trid = $sitepress->get_element_trid($original_post_id, $element_type);
+
+				$element_language_details = $sitepress->get_element_translations($trid, $element_type );
+
+				$item_updated = false;
+				foreach ( $active_languages as $code => $active_language ) {
+					if ( !isset( $element_language_details[ $code ] ) ) {
+						continue;
+					}
+
+					$element_translation = $element_language_details[ $code ];
+					if ( !isset( $element_translation ) || $element_translation->original ) {
+						continue;
+					}
+
+					$translation = $iclTranslationManagement->get_element_translation( $element_translation->element_id, $code, $element_type );
+					if ( !$translation ) {
+						$_POST['icl_trid'] = $trid;
+						$_POST['icl_post_language'] = $code;
+						$translated_post = get_post( $element_translation->element_id );
+						$iclTranslationManagement->save_post_actions( $element_translation->element_id, $translated_post, ICL_TM_DUPLICATE );
+						unset($_POST['icl_post_language']);
+						unset($_POST['icl_trid']);
+						$item_updated = true;
+					}
+				}
+
+				if ( $item_updated ) {
+					$updated_items++;
+				}
+				if ( $updated_items >= 20 ) {
+					break;
+				}
+			}
+
+			echo json_encode( array( 'updated' => $updated_items ));
+			exit;
 		case 'sync_cancelled':
 
 			$iclq     = new ICanLocalizeQuery( $sitepress_settings[ 'site_id' ], $sitepress_settings[ 'access_key' ] );
@@ -308,7 +367,6 @@ if ( isset( $_GET[ 'debug_action' ] ) && $_GET[ 'nonce' ] == wp_create_nonce( $_
 			}
 
 			exit;
-
 		case 'sync_cancelled_do_delete':
 			$translations = unserialize( stripslashes( $_POST[ 't2c' ] ) );
 			if ( is_array( $translations ) )
@@ -385,25 +443,30 @@ if ( isset( $_GET[ 'debug_action' ] ) && $_GET[ 'nonce' ] == wp_create_nonce( $_
 			}
 
 			exit;
-
 		case 'link_post_type':
 			$wpdb->update( $wpdb->prefix . 'icl_translations', array( 'element_type' => 'post_' . $_GET[ 'new_value' ] ), array( 'element_type' => 'post_' . $_GET[ 'old_value' ] ) );
 			exit;
-
 		case 'link_taxonomy':
 			$wpdb->update( $wpdb->prefix . 'icl_translations', array( 'element_type' => 'tax_' . $_GET[ 'new_value' ] ), array( 'element_type' => 'tax_' . $_GET[ 'old_value' ] ) );
 			exit;
-
 		case 'icl_fix_terms_count':
+			global $sitepress;
+
+			remove_filter('get_terms_args', array($sitepress, 'get_terms_args_filter'));
+			remove_filter('get_term', array($sitepress,'get_term_adjust_id'));
+			remove_filter('terms_clauses', array($sitepress,'terms_clauses'));
 			foreach ( get_taxonomies( array(), 'names' ) as $taxonomy ) {
+
 				$terms_objects = get_terms( $taxonomy, 'hide_empty=0'  );
 				if ( $terms_objects ) {
-					$term_taxonomy_ids = array_map( function ( $term_object ) {
-						return $term_object->term_taxonomy_id;
-					}, $terms_objects );
+					$term_taxonomy_ids = array_map( 'get_term_taxonomy_id_from_term_object', $terms_objects );
 					wp_update_term_count( $term_taxonomy_ids, $taxonomy, true );
 				}
+
 			}
+			add_filter('terms_clauses', array($sitepress,'terms_clauses'));
+			add_filter('get_term', array($sitepress,'get_term_adjust_id'));
+			add_filter('get_terms_args', array($sitepress, 'get_terms_args_filter'));
 			exit;
 	}
 }
@@ -601,7 +664,102 @@ echo '</textarea>';
 				jQuery('#icl_cleanup').next().fadeOut();
 
 			});
-		})
+		});
+
+		// #assign_translation_status_to_duplicates_resp: BEGIN
+		var assign_translation_status_to_duplicates_loader = jQuery(icl_ajxloaderimg);
+		var assign_translation_status_to_duplicates_cycles = 0;
+		var assign_translation_status_to_duplicates_updated = 0;
+		var response_element = jQuery('#assign_translation_status_to_duplicates_resp');
+		var assign_translation_status_to_duplicates_element = jQuery('#assign_translation_status_to_duplicates');
+		assign_translation_status_to_duplicates_element.click(function () {
+			assign_translation_status_to_duplicates();
+		});
+
+		function assign_translation_status_to_duplicates() {
+
+			if (assign_translation_status_to_duplicates_cycles == 0) {
+				assign_translation_status_to_duplicates_element.attr('disabled', 'disabled');
+				response_element.text('');
+				response_element.show();
+				assign_translation_status_to_duplicates_element.after(assign_translation_status_to_duplicates_loader);
+
+			}
+			assign_translation_status_to_duplicates_cycles++;
+
+			jQuery.ajax({
+				type: 'POST',
+				contentType: "application/json; charset=utf-8",
+				url: location.href + '&debug_action=assign_translation_status_to_duplicates&nonce=<?php echo wp_create_nonce('assign_translation_status_to_duplicates'); ?>',
+				dataType: 'json',
+				success: function (msg) {
+					assign_translation_status_to_duplicates_updated += msg.updated;
+					var response_message;
+					if (msg.updated > 0) {
+						response_message = assign_translation_status_to_duplicates_updated + ' <?php echo esc_js(_x('translation jobs updated', 'Sets the translation status to DUPLICATE in the icl_translation_status table, for posts that are marked as duplicated', 'sitepress')); ?>';
+
+						if (assign_translation_status_to_duplicates_cycles >= 50) {
+							response_message += '. <?php echo esc_js(_x('Partially done.', 'Sets the translation status to DUPLICATE in the icl_translation_status table, for posts that are marked as duplicated','sitepress')) ?>';
+							response_message += '. <?php echo esc_js(_x('There might be more content to fix: please repeat the process.', 'Sets the translation status to DUPLICATE in the icl_translation_status table, for posts that are marked as duplicated','sitepress')) ?>';
+							response_element.text(response_message);
+							alert('<?php echo esc_js(_x('Partially done', 'Sets the translation status to DUPLICATE in the icl_translation_status table, for posts that are marked as duplicated', 'sitepress')) ?>');
+							response_element.fadeOut();
+							assign_translation_status_to_duplicates_loader.fadeOut(function() {
+								assign_translation_status_to_duplicates_element.remove(assign_translation_status_to_duplicates_loader);
+							});
+							assign_translation_status_to_duplicates_element.removeAttr('disabled');
+
+							//Reset counters
+							assign_translation_status_to_duplicates_cycles = 0;
+							assign_translation_status_to_duplicates_updated = 0;
+						} else {
+							response_message += ' ...';
+							response_element.text(response_message);
+							assign_translation_status_to_duplicates();
+						}
+					} else {
+						response_message = '';
+						if (assign_translation_status_to_duplicates_updated != 0) {
+							response_message += assign_translation_status_to_duplicates_updated + '.';
+						}
+						response_message += '<?php echo esc_js(__('Done', 'sitepress')) ?>';
+						response_element.text(response_message);
+
+						alert('<?php echo esc_js(__('Done', 'sitepress')) ?>');
+
+						response_element.fadeOut();
+						assign_translation_status_to_duplicates_loader.fadeOut(function() {
+							assign_translation_status_to_duplicates_element.remove(assign_translation_status_to_duplicates_loader);
+						});
+						assign_translation_status_to_duplicates_element.removeAttr('disabled');
+					}
+				},
+				error: function (xhr, status, error) {
+
+					var err;
+					if(xhr.status) {
+						err += '| Status: ' + xhr.status;
+					}
+					if(xhr.statusText) {
+						err += '| Status Text: ' + xhr.statusText;
+					}
+					if(xhr.responseText) {
+						err += '| Response: ' + eval("(" + xhr.responseText + ")");
+					}
+
+					var parsed_response = err;
+
+					response_element.text('');
+					response_element.html(parsed_response);
+					assign_translation_status_to_duplicates_loader.fadeOut(function() {
+						assign_translation_status_to_duplicates_element.remove(assign_translation_status_to_duplicates_loader);
+					});
+					assign_translation_status_to_duplicates_element.attr('disabled', 'disabled');
+				}
+			});
+		}
+
+		// #assign_translation_status_to_duplicates_resp: END
 
 		function _icl_sync_cms_id(offset) {
 			jQuery('#icl_cms_id_fix_prgs_cnt').html(offset + 1);
@@ -710,7 +868,6 @@ echo '</textarea>';
 
 			});
 		});
-
 	})
 </script>
 <div class="icl_cyan_box">
@@ -739,6 +896,13 @@ echo '</textarea>';
 		<input id="icl_cleanup" type="button" class="button-secondary" value="<?php _e( 'General clean up', 'sitepress' ) ?>"/><br/>
 		<small style="margin-left:10px;"><?php _e( 'Sets source language to NULL in the icl_translations table.', 'sitepress' ) ?> </small>
 	</p>
+
+	<?php if(class_exists('TranslationManagement')): ?>
+	<p>
+		<input id="assign_translation_status_to_duplicates" type="button" class="button-secondary" value="<?php _e( 'Assign translation status to duplicated content', 'sitepress' ) ?>"/><span id="assign_translation_status_to_duplicates_resp"></span><br/>
+		<small style="margin-left:10px;"><?php _e( 'Sets the translation status to DUPLICATE in the icl_translation_status table, for posts that are marked as duplicated.', 'sitepress' ) ?> </small>
+	</p>
+	<?php endif; ?>
 
 	<?php if ( !defined( 'ICL_DONT_PROMOTE' ) || !ICL_DONT_PROMOTE ): ?>
 		<p>
