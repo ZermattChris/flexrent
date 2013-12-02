@@ -29,7 +29,7 @@
 								if ( has_excerpt() ) the_excerpt();
 								else the_content( '' );
 
-								echo '<a href="' . esc_url( $page_permalink ) . '" class="learn-more">' . __( 'More', 'Nimble' ) . '</a>';
+								echo '<a href="' . esc_url( $page_permalink ) . '" class="learn-more">' . __( 'Learn More', 'Nimble' ) . '</a>';
 
 							echo '</div> <!-- end .service -->';
 						endwhile;

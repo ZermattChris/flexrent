@@ -73,12 +73,12 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
     border: 1px solid 630000;
     border-radius: 10px 10px 10px 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) inset;
-    font-weight: 800;
+    font-weight: 600;
 }
 #featured.flexslider {
     height: 200px;
 }
-    #featured h2 {
+    #featured h2, #page-name h1 {
         font-size: 60px;
         font-weight: 600;
         letter-spacing: 1px;
@@ -106,22 +106,22 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
         h1 pages heading.
     */
     #page-name {
-        width: 960px;
-        margin: -40px auto 0 auto;
+        width: 720px;
+        margin: -30px auto 0 auto;
         position: relative;
         text-align: right;
     }
-    #featured h2 {
-        font-size: 48px;
-        letter-spacing: 1px;
-    }
+        #featured h2, #page-name h1 {
+            font-size: 42px;
+            letter-spacing: 1px;
+        }
 
 }
 
 /* Small Header */
 @media only screen and (max-width: 767px) {
     .et_color_scheme_gray #background-wrapper {
-        background: url(images/header-circle-background-small-80.png) no-repeat center top;
+        background: url(images/header-circle-background-small-80.png) no-repeat center -145px;
     }
         #main-header div.container {
             height: 240px;
@@ -138,6 +138,9 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
                 }
                 #featured div.description {
                     text-align: center;
+                }
+                #featured.flexslider {
+                    height: inherit;
                 }
                 /* Centers the slide image for Tablet and Phone size screens */
                 /*#featured .slide.flex-active-slide img {*/
@@ -170,10 +173,23 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
         padding-right: 0;
     }
 
-    #featured h2 {
-        font-size: 32px;
-        letter-spacing: 1px;
+
+    /*
+        This is the box that holds the top level page's (not the *home* page)
+        h1 pages heading.
+    */
+    #page-name {
+        width: inherit;
+        margin: 0px auto 0 auto;
+        text-align: center;
     }
+        #featured h2, #page-name h1 {
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+        #page-name .section-title {
+            padding-bottom: 15px;
+        }
 }
 
 
@@ -196,7 +212,7 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
         top: 15px;
     }
 
-#lang_sel a.lang_sel_sel {
+.home_lang_box #lang_sel a.lang_sel_sel {
     padding-left: 0;
 }
 
@@ -218,8 +234,24 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
         left: 0px;
         top: 20px;
     }
+    .service h3 {
+        color: #000000;
+    }
+    a.learn-more, .comment-reply-link, .form-submit input {
+        /*background: linear-gradient(to bottom, #F9F9F9 0%, #F6F6F6 100%, #F2F2F2 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);*/
+        /*border: 1px solid MAROON;*/
+        /*border-radius: 5px;*/
+        /*box-shadow: 1px 1px 0 #FCFCFC inset, 0 1px 2px rgba(0, 0, 0, 0.1);*/
+        color: #000000;
+        /*display: inline-block;*/
+        /*float: right;*/
+        /*padding: 10px 16px;*/
+        /*text-decoration: none;*/
+        /*text-shadow: 1px 1px 0 #FFFFFF;*/
+    }
 
 #home-section-pricing {
+    background-color: maroon;
     padding: 80px 0;
 }
 
@@ -229,7 +261,7 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
     padding: 120px 0;
 }
 #home-section-html-panel-2 {
-    background-color: #F5F5F5;
+    background-color: silver;
     padding: 113px 0 120px;
 }
 
@@ -245,7 +277,9 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
 
 
 
-
+#page-name .section-title h1, #page-name .section-title .section-subtitle, .main_post_info {
+    text-shadow: 0 0 3px rgba(0, 0, 0, 1.0), 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
 
 
 

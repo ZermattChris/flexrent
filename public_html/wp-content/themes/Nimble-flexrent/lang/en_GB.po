@@ -81,7 +81,7 @@ msgstr ""
 
 #: ../functions.php:141
 msgid "Pages Menu"
-msgstr "PAGES MENU"
+msgstr ""
 
 #: ../functions.php:221
 #, php-format
@@ -212,7 +212,7 @@ msgstr ""
 
 #: ../home.php:28 ../home.php:96 ../includes/entry.php:50
 msgid "Learn More"
-msgstr ""
+msgstr "MORE..."
 
 #: ../home.php:89
 #, php-format
