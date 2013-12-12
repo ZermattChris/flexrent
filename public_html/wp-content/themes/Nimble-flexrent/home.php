@@ -22,7 +22,7 @@
 
 							echo '<div class="service' . ( 1 == $i ? ' first' : '' ) . ( $blurbs_number == $i ? ' last' : '' ) . '">';
 								if ( ( $page_icon = get_post_meta( get_the_ID(), 'Icon', true ) ) && '' != $page_icon )
-									printf( '<img src="%1$s" alt="%2$s" class="et_page_icon" />', esc_attr( $page_icon ), esc_attr( $page_title ) );
+									printf( '<a href="' . esc_url( $page_permalink ) . '" ><img src="%1$s" alt="%2$s" class="et_page_icon" /></a>', esc_attr( $page_icon ), esc_attr( $page_title ) );
 
 								echo '<h3>' . $page_title . '</h3>';
 

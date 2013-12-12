@@ -199,6 +199,14 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
     padding: 9px 9px;
 }
 
+/* ============================== Footer ============================== */
+.footer-widget ul.sub-menu {
+    padding-top: 8px;
+}
+    .footer-widget ul.sub-menu li {
+        padding-bottom: 5px;
+    }
+
 
 /* ========================== Language Selector ============================= */
 .home_lang_box {
@@ -212,12 +220,20 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
         top: 15px;
     }
 
-.home_lang_box #lang_sel a.lang_sel_sel {
+.home_lang_box #lang_sel a.lang_sel_sel,
+.page_lang_box #lang_sel a.lang_sel_sel{
     padding-left: 0;
 }
 
 
-
+.page_lang_box {
+    text-align: center;
+}
+    .page_lang_box #lang_sel {
+        position: relative;
+        top: -35px;
+        /*margin: 0 auto;*/
+    }
 
 
 /* ========================== Home Page Content ============================= */
@@ -233,6 +249,7 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
     .service .et_page_icon {
         left: 0px;
         top: 20px;
+        border: maroon 2px solid;
     }
     .service h3 {
         color: #000000;
@@ -277,7 +294,14 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
 
 
 
-#page-name .section-title h1, #page-name .section-title .section-subtitle, .main_post_info {
+/* ========================== All Pages Content (except Home) ============================= */
+.post-edit-link{display:none;}
+
+#content-area {
+    padding-top: 95px;      /* Add more space below the header and before the page's content area. */
+}
+
+#page-name .s.ection-title h1, #page-name .section-title .section-subtitle, .main_post_info {
     text-shadow: 0 0 3px rgba(0, 0, 0, 1.0), 2px 2px 3px rgba(0, 0, 0, 0.5);
 }
 
