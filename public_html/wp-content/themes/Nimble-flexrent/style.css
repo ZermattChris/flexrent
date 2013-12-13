@@ -296,6 +296,9 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
 
 /* ========================== All Pages Content (except Home) ============================= */
 .post-edit-link{display:none;}
+.post_content {
+    line-height: 1.5em;
+}
 
 #content-area {
     padding-top: 95px;      /* Add more space below the header and before the page's content area. */
@@ -304,6 +307,14 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
 #page-name .s.ection-title h1, #page-name .section-title .section-subtitle, .main_post_info {
     text-shadow: 0 0 3px rgba(0, 0, 0, 1.0), 2px 2px 3px rgba(0, 0, 0, 0.5);
 }
+
+    /* Drop Cap*/
+    .et-dropcap {
+        position: relative;
+        top: -0px;
+        font-size: 68px !important;
+        line-height: 0.9 !important;
+    }
 
 
 
