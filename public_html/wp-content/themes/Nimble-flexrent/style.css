@@ -318,8 +318,24 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
 
 
 
-
-
+/* Corp Pricing Tables (Ski Service) */
+/* Remove Button from table col bottom */
+div#service-prices div.pricing-table-wrap a.icon-button {
+    display: none;
+}
+    div#service-prices .pricing-big h2.pricing-title {
+        color: #be9300 !important;
+    }
+    div#service-prices .pricing-content-bottom {
+        padding-bottom: 20px !important;
+    }
+    div#service-prices .pricing-big  .pricing-content-bottom {
+        padding-bottom: 53px !important;
+    }
+        div#service-prices .pricing-big  .pricing-content-bottom span.et-price {
+            position: relative;
+            top: 15px;
+        }
 
 
 
