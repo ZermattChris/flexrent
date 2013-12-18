@@ -198,6 +198,15 @@ ul.nav > li.current_page_item > a, a.mobile_nav {
     letter-spacing: 2px;
     padding: 9px 9px;
 }
+/* Search Menu icon */
+#wpadminbar #adminbarsearch:before {
+    content: "";
+    font: 400 20px/1 dashicons !important;
+    left: 5px;
+    position: absolute;
+    top: 6px;
+    z-index: 20;
+}
 
 /* ============================== Footer ============================== */
 .footer-widget ul.sub-menu {
